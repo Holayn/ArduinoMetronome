@@ -60,6 +60,10 @@ float bpm = 80; // beats per minute for metronome
 float rate; // this is the interval we need to wait to change angle (in milliseconds). Calculated off of BPM.
 // ---------------------------------------------------------
 const int led = 8; // led
+long prevMillisSound; // will store last time sound was played
+int soundDelay = 10; // delay to stop the sound playing
+boolean hitMiddle = false; // boolean for stick at 90 degrees
+boolean off = true; // boolean for turning light on or off
 
 void setup() {
   metroServo.attach(metroPin); // servo setup
@@ -85,9 +89,6 @@ void setup() {
   metroServo.write(currentPos); // Move servo to current position
 }
 
-long prevMillisSound;
-int soundDelay = 10;
-boolean hitMiddle = false;
 void loop() {
   metronome();
   // If break out of metronome, reset everything
@@ -283,16 +284,15 @@ void stopBeep() {
 }
 
 // Blinks LED
-boolean left = true;
 void light() {
   digitalWrite(led,LOW);
-  if(left){
+  if(off){
     digitalWrite(led,HIGH);
-    left = false;
+    off = false;
   }
   else{
     digitalWrite(led,LOW);
-    left = true;
+    off = true;
   }
 }
 
