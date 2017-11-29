@@ -199,7 +199,7 @@ void tuning() {
 // Resets the servo to a 90 degree position
 void reset() {
   metroServo.write(90,255);
-  hitMiddle = false;
+  hitMiddle = true;
 }
 
 // Performs the servo rotation
@@ -432,6 +432,7 @@ void pin_rightbut_ISR() {
     rightPressed = false;
   }
 }
+
 
 
 
