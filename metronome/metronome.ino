@@ -77,7 +77,9 @@ void setup() {
   lcd.begin(16, 2);
   lcd.clear();
   lcd.print("BPM: ");
-  lcd.print(bpm);
+  lcd.print((int)bpm);
+  lcd.print (" 1/");
+  lcd.print(emphasis[currentEmphasis]);
   lcd.setCursor(0,1);
   lcd.print("Adj. w/ btns");
   // Setup buttons
@@ -100,12 +102,14 @@ void loop() {
 void metronome() {
   prevMillisSound = millis();
   previousMillis = millis();
+  updateBPMDisplay();
   while(true){
     unsigned long currentMillis = millis();
     // rate = (( 60.0 / bpm )*1000.0) / 180.0;
     rate = 60/bpm*1000;
     if(leftReleased){         // left button press
       resetFlags();
+      stopBeep();             // stop any beeping
       // decrease bpm by 5
       if(bpm != 0){           // min BPM
         bpm = bpm - 5.0;
@@ -115,6 +119,7 @@ void metronome() {
     }
     if(rightReleased){        // right button press
       resetFlags();
+      stopBeep();             // stop any beeping
       // increase bpm by 5
       if(bpm != 255){         // max BPM
         bpm = bpm + 5.0;
@@ -124,10 +129,12 @@ void metronome() {
     }
     if(bothPressed){          // if both buttons are pressed, go to next timing. If no more timings, break and go to tone screen
       resetFlags();
+      stopBeep();             // stop any beeping
       beepCtr = 0; // reset the beat we're on
       if(currentEmphasis < 3){
         // go to next beat emphasis
         currentEmphasis++;
+        updateBPMDisplay();
       }
       else{
          currentEmphasis = 0; // reset back to normal beat emphasis
@@ -161,6 +168,7 @@ void metronome() {
 // Gives tuning tones
 void tuning() {
   digitalWrite(led,HIGH);
+  updateTuneDisplay();
   while(true){
     // Play tune
     tone(speakerPin, tunes[tuneCtr]);
@@ -238,41 +246,41 @@ void beep() {
   // Every 2 quarters
   if(emphasis[currentEmphasis] == 2){
     if(beepCtr == 0){
-      tone(speakerPin, NOTE_F5);
+      tone(speakerPin, NOTE_A5);
       beepCtr++;
     }
     else{
-      tone(speakerPin, NOTE_A5);
+      tone(speakerPin, NOTE_F5);
       beepCtr = 0;
     }
   }
   // Every 3 quarters
   if(emphasis[currentEmphasis] == 3){
     if(beepCtr == 0){
-      tone(speakerPin, NOTE_F5);
+      tone(speakerPin, NOTE_A5);
       beepCtr++;
     }
     else if(beepCtr < 2){
-      tone(speakerPin, NOTE_A5);
+      tone(speakerPin, NOTE_F5);
       beepCtr++;
     }
     else{
-      tone(speakerPin, NOTE_A5);
+      tone(speakerPin, NOTE_F5);
       beepCtr = 0;
     }
   }
   // Every 4 quarters
   if(emphasis[currentEmphasis] == 4){
     if(beepCtr == 0){
-      tone(speakerPin, NOTE_F5);
+      tone(speakerPin, NOTE_A5);
       beepCtr++;
     }
     else if(beepCtr < 3){
-      tone(speakerPin, NOTE_A5);
+      tone(speakerPin, NOTE_F5);
       beepCtr++;
     }
     else{
-      tone(speakerPin, NOTE_A5);
+      tone(speakerPin, NOTE_F5);
       beepCtr = 0;
     }
   }
@@ -301,7 +309,7 @@ void updateBPMDisplay() {
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("BPM: ");
-  lcd.print(bpm);
+  lcd.print((int)bpm);
   lcd.print(" ");
   lcd.print("1/");
   lcd.print(emphasis[currentEmphasis]);
@@ -417,3 +425,16 @@ void pin_rightbut_ISR() {
     rightPressed = false;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
