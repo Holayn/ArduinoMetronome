@@ -64,6 +64,8 @@ long prevMillisSound; // will store last time sound was played
 int soundDelay = 10; // delay to stop the sound playing
 boolean hitMiddle = false; // boolean for stick at 90 degrees
 boolean off = true; // boolean for turning light on or off
+const int maxBPM = 255;
+const int minBPM = 30;
 
 void setup() {
   metroServo.attach(metroPin); // servo setup
@@ -111,7 +113,7 @@ void metronome() {
       resetFlags();
       stopBeep();             // stop any beeping
       // decrease bpm by 5
-      if(bpm != 0){           // min BPM
+      if(bpm != minBPM){           // min BPM
         bpm = bpm - 5.0;
       }
       updateBPMDisplay();
@@ -121,7 +123,7 @@ void metronome() {
       resetFlags();
       stopBeep();             // stop any beeping
       // increase bpm by 5
-      if(bpm != 255){         // max BPM
+      if(bpm != maxBPM){         // max BPM
         bpm = bpm + 5.0;
       }
       updateBPMDisplay();
@@ -225,6 +227,11 @@ void rotate(int bpm) {
     minPos = 0;
     maxPos = 180;
     speed = 70;
+  }
+  if(bpm <= 40){
+    minPos = 0;
+    maxPos = 180;
+    speed = 50;
   }
   if(goingRight){
     metroServo.write(minPos, speed);
@@ -425,6 +432,9 @@ void pin_rightbut_ISR() {
     rightPressed = false;
   }
 }
+
+
+
 
 
 
