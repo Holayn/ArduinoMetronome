@@ -149,7 +149,7 @@ void metronome() {
       prevMillisSound = currentMillis;
       stopBeep();
     }
-    // Beep and light LED when servo in vertical position
+    // Beep and light LED when servo in vertical position. Aka, when it's halfway between left and right position.
     if((currentMillis - previousMillis >= rate/2) && !hitMiddle){
       light();
       beep();
@@ -204,6 +204,7 @@ void reset() {
 
 // Performs the servo rotation
 // Changes speed and angle to write to based on BPM
+// Slower speeds rotate slower, and vice versa.
 void rotate(int bpm) {
   int minPos;
   int maxPos;
@@ -233,6 +234,7 @@ void rotate(int bpm) {
     maxPos = 180;
     speed = 50;
   }
+  // Moving servo between left and right positions
   if(goingRight){
     metroServo.write(minPos, speed);
     goingRight = false;
@@ -329,6 +331,7 @@ void updateTuneDisplay() {
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Tuning Note: ");
+  // Displays different note based on selection
   switch(tuneCtr) {
     case 0:
       lcd.print("A");
